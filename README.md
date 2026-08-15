@@ -1,22 +1,22 @@
-# 🛡️ Dadami — Self.xyz SybilShield Enrollment Gateway
+# 🛡️ Self.xyz SybilShield Enrollment Gateway
 
 [![Base Sepolia](https://img.shields.io/badge/Network-Base_Sepolia-blue?logo=ethereum)](https://sepolia.basescan.org/address/0xEe3c37AC3B48c939540b12f22db07704CF0FAAc4)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-lightgrey?logo=solidity)](https://soliditylang.org/)
 [![Foundry](https://img.shields.io/badge/Framework-Foundry-orange)](https://getfoundry.sh/)
 [![ZK-SNARKs](https://img.shields.io/badge/Privacy-Self.xyz_ZK_Proofs-green)](https://self.xyz)
 
-> **Decentralized, privacy-preserving student identity verification on Base using zero-knowledge (ZK) biometric passport proofs.**
+> **Generic, modular, and privacy-preserving SybilShield enrollment framework for Web3 dapps on Base using Self.xyz Zero-Knowledge (ZK) biometric passport proofs.**
 
 ---
 
 ## 🌟 Executive Overview & Web3 Paradigm Aim
 
-In traditional Web3 grant distributions, student aid programs, and DAO governance, applications suffer from two critical vulnerabilities:
-1. **Sybil Attacks & Bot Farms**: Malicious actors create thousands of synthetic wallets to drain funds intended for real individuals.
-2. **Privacy Invasion**: Traditional KYC requires uploading plain-text passports, driver's licenses, and government IDs to centralized servers, exposing users to data breaches and identity theft.
+In Web3 dapps, DAOs, airdrops, quadratic funding, and grant distribution programs, applications face two major challenges:
+1. **Sybil Attacks & Bot Farms**: Automated bots create thousands of fake wallets to claim rewards and manipulate voting.
+2. **Privacy Invasion**: Traditional KYC forces users to upload plain-text ID cards to centralized databases, creating honeypots for identity theft.
 
-### The Paradigm Solution: Self.xyz Biometric ZK Verification
-This prototype implements **Self.xyz Zero-Knowledge Passport Verification** for **Dadami** on **Base**. It enables students to cryptographically prove they are unique, non-sanctioned real human beings holding a valid government biometric passport (ICAO 9303 standard) **without revealing their name, passport number, date of birth, or photo on-chain**.
+### The Plug-and-Play Solution: Generic ZK SybilShield
+This repository provides a **reusable, modular SybilShield enrollment gateway** powered by **Self.xyz**. Any Web3 application (e.g. Dadami, DAOs, Grant Hubs, Airdrop platforms) can import `SelfVerifier.sol` to allow real humans to verify their unique humanity using passport ZK proofs (ICAO 9303 standard) **without revealing their name, passport number, or date of birth on-chain**.
 
 ---
 
