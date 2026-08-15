@@ -87,6 +87,13 @@ This repository provides a **reusable, modular SybilShield enrollment gateway** 
 
 ## 🚀 Quickstart & Local Setup
 
+To easily set up this repository in standalone mode (configure environment files, install local dependencies, and compile contracts in one click), run:
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+
 ### 1. Smart Contract Compilation & Unit Tests
 ```bash
 cd contracts
@@ -124,4 +131,4 @@ Open **[http://localhost:8000](http://localhost:8000)** in Google Chrome, connec
 ---
 
 ## 📜 License
-MIT License. Built with ❤️ for ETHGlobal and the Base Ecosystem.
+MIT License. Built with ❤️ for the Base Ecosystem.
