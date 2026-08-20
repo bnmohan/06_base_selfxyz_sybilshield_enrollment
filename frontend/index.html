@@ -53,6 +53,41 @@
       padding: 24px;
     }
 
+    /* Network Switcher Bar */
+    .network-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 100px;
+      font-size: 13px;
+    }
+
+    .network-pill {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 4px 12px;
+      border-radius: 100px;
+      transition: all 0.2s ease;
+    }
+
+    .network-pill:hover {
+      color: #fff;
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .network-pill.active {
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
     /* Glassmorphism Card */
     .card {
       background: var(--card-bg);
@@ -157,10 +192,23 @@
       border-radius: 12px;
       padding: 12px;
       font-family: monospace;
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
       margin-bottom: 24px;
       display: none;
+      word-break: break-all;
+    }
+
+    .network-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-family: monospace;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      color: var(--color-accent);
+      margin-top: 6px;
     }
 
     /* Simulator Panel */
@@ -187,11 +235,11 @@
     }
 
     .step-list {
-      list-style: none;
       display: flex;
       flex-direction: column;
       gap: 12px;
       margin-bottom: 20px;
+      list-style: none;
     }
 
     .step-item {
@@ -252,20 +300,6 @@
       justify-content: center;
     }
 
-    .qr-mock {
-      width: 100%;
-      height: 100%;
-      border: 4px dashed #000;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #000;
-      font-size: 12px;
-      letter-spacing: 1px;
-    }
-
     /* Success State */
     .success-container {
       display: none;
@@ -279,104 +313,151 @@
     }
 
     .proof-data {
-      background: rgba(3, 7, 18, 0.8);
+      background: rgba(3, 7, 18, 0.6);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 18px;
+      padding: 20px;
       font-family: monospace;
-      font-size: 12px;
+      font-size: 13px;
       text-align: left;
       color: var(--color-accent);
       overflow-x: auto;
-      max-height: 200px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .credential-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      color: var(--color-accent);
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #f87171;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #f87171;
+      transform: translateY(-2px);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
+  <!-- Multi-Network Switcher -->
+  <div class="network-bar">
+    <span style="color: var(--text-muted);">Network:</span>
+    <a id="link-sepolia" href="?network=sepolia" class="network-pill">Base Sepolia</a>
+    <a id="link-anvil" href="?network=anvil" class="network-pill">Anvil Local</a>
+  </div>
+
   <div class="card">
     <!-- Active State Screen -->
     <div id="active-state">
-      <span class="badge">Project 06 — Self.xyz</span>
-      <h1>Dadami Enrollment</h1>
-      <p>Authenticate your passport cryptographically using Self.xyz. Only unique, non-sanctioned real individuals can register.</p>
+      <span class="badge">Project 06 — Biometric ZK</span>
+      <h1>Self.xyz SybilShield</h1>
+      <p>Verify your official passport via Zero-Knowledge proofs to authenticate student admission with zero data leakage.</p>
       
       <!-- Connect MetaMask Wallet -->
       <button id="connect-wallet-btn" class="btn btn-wallet">Connect MetaMask Wallet</button>
-      <div id="wallet-info" class="wallet-info"></div>
+      <div id="wallet-info" class="wallet-info">
+        <div>Connected: <span id="user-addr-text">0x...</span></div>
+        <div id="active-network-badge" class="network-badge">Target: Base Sepolia</div>
+      </div>
 
-      <!-- Start Verification -->
-      <button id="start-verification-btn" class="btn btn-primary" disabled>Start Self.xyz Passport Verification</button>
+      <!-- Trigger Self.xyz Flow -->
+      <button id="start-verify-btn" class="btn btn-primary" disabled>Verify Official ID (Self.xyz)</button>
 
-      <!-- Verification Simulator Interface -->
+      <!-- Interactive QR & Simulator Panel -->
       <div id="simulator-panel" class="simulator-panel">
         <div class="simulator-title">
-          <span>📲</span> Self Pass Identity Hub (Mockup Simulator)
-        </div>
-        
-        <div class="qr-container" id="qr-container">
-          <div class="qr-box">
-            <div class="qr-mock">Self Pass</div>
-          </div>
+          <span>📱</span> Verification Flow
         </div>
 
         <ul class="step-list">
-          <li class="step-item active" id="step1">
+          <li id="step1" class="step-item active">
             <span class="step-icon">1</span>
-            <span>Scan QR Code with Self Pass Mobile App</span>
+            <span>Scan QR Code with Self Pass App</span>
           </li>
-          <li class="step-item" id="step2">
+          <li id="step2" class="step-item">
             <span class="step-icon">2</span>
-            <span>Scan NFC Passport Chip & Generate Local ZK-Proof</span>
+            <span>Read NFC Chip & Disclose Proof</span>
           </li>
-          <li class="step-item" id="step3">
+          <li id="step3" class="step-item">
             <span class="step-icon">3</span>
-            <span>Cryptographic proof generated successfully</span>
+            <span>On-Chain Attestation Verified</span>
           </li>
         </ul>
 
-        <button id="simulate-step-btn" class="btn btn-primary" style="margin-bottom: 0;">Run In-Browser Simulator (Fallback)</button>
+        <div class="qr-container">
+          <div id="qr-container" class="qr-box"></div>
+        </div>
+
+        <button id="simulate-step-btn" class="btn btn-primary" style="margin-bottom: 0;">Scan & Generate Proof</button>
       </div>
     </div>
 
     <!-- Success State Screen -->
     <div id="success-state" class="success-container">
       <div class="success-icon">✓</div>
-      <h1>Enrollment Successful</h1>
-      <p style="margin-bottom: 18px;">Your passport verification was confirmed on-chain! Your wallet is now enrolled in the Dadami student portal.</p>
+      <h1>Identity Verified</h1>
+      <p style="margin-bottom: 18px;">Your passport attestation was cryptographically confirmed. Your wallet is now admitted as a verified unique human.</p>
       
       <div class="proof-data">
-        <div style="color: var(--text-muted); margin-bottom: 6px;">// On-Chain Attestation Details:</div>
-        <div><strong>attestationId:</strong> <span id="proof-attestation"></span></div>
-        <div><strong>userIdentifier:</strong> <span id="proof-userid"></span></div>
+        <div style="color: var(--text-muted); margin-bottom: 8px;">// Verified ZK Disclose Output:</div>
+        <div><strong>network:</strong> <span id="proof-network"></span></div>
+        <div><strong>attestation:</strong> <span id="proof-attestation"></span></div>
+        <div><strong>user_id:</strong> <span id="proof-userid"></span></div>
         <div><strong>nullifier:</strong> <span id="proof-nullifier"></span></div>
-        <div><strong>issuingState:</strong> <span id="proof-country"></span></div>
-        <div style="margin-top: 10px; color: var(--color-success);">status: "Verified Real Student"</div>
+        <div><strong>issuing_country:</strong> <span id="proof-country"></span></div>
+        <div class="credential-badge">ICAO 9303 Biometric Pass Confirmed</div>
       </div>
 
       <!-- Dev Mode Reset Button -->
-      <button id="reset-reg-btn" class="btn" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; margin-top: 12px;">
-        🔄 Reset Registration (Dev Mode)
-      </button>
+      <button id="reset-reg-btn" class="btn btn-danger">🔄 Reset Registration (Dev Mode)</button>
     </div>
   </div>
 
   <script>
+    // 1. Resolve Active Network configuration
+    let currentNetwork = window.getActiveNetwork();
+
+    // Highlight active network pill in UI
+    const urlParams = new URLSearchParams(window.location.search);
+    const netParam = (urlParams.get('network') || '').toLowerCase();
+    if (netParam === 'anvil' || netParam === 'local' || netParam === '31337') {
+      document.getElementById('link-anvil').classList.add('active');
+    } else {
+      document.getElementById('link-sepolia').classList.add('active');
+    }
+
+    // 2. UI Elements
     const connectBtn = document.getElementById('connect-wallet-btn');
     const walletInfo = document.getElementById('wallet-info');
-    const startVerifyBtn = document.getElementById('start-verification-btn');
+    const userAddrText = document.getElementById('user-addr-text');
+    const networkBadge = document.getElementById('active-network-badge');
+    const startVerifyBtn = document.getElementById('start-verify-btn');
     const simulatorPanel = document.getElementById('simulator-panel');
     const simulateStepBtn = document.getElementById('simulate-step-btn');
-    
     const activeState = document.getElementById('active-state');
     const successState = document.getElementById('success-state');
-    
+
+    const proofNetwork = document.getElementById('proof-network');
     const proofAttestation = document.getElementById('proof-attestation');
     const proofUserid = document.getElementById('proof-userid');
     const proofNullifier = document.getElementById('proof-nullifier');
@@ -386,12 +467,11 @@
     const step2 = document.getElementById('step2');
     const step3 = document.getElementById('step3');
 
-    // Contract address dynamically loaded from config.js
-    const contractAddress = window.APP_CONFIG?.CONTRACT_ADDRESS;
     const contractAbi = [
       "function isHuman(address user) external view returns (bool)",
       "function verifySelfProof((bytes32 attestationId, uint256 userIdentifier, uint256 nullifier, string issuingState) calldata output, bytes calldata proof, bytes calldata userData) external",
-      "function resetRegistration(address user) external"
+      "function resetRegistration(address user) external",
+      "event HumanRegistered(address indexed user, uint256 indexed nullifier, string issuingState)"
     ];
 
     let userWalletAddress = null;
@@ -402,52 +482,36 @@
     // Connect Wallet
     connectBtn.addEventListener('click', async () => {
       try {
-        if (window.ethereum) {
-          provider = new ethers.BrowserProvider(window.ethereum);
-          
-          // Request network switch/add using window.APP_CONFIG
-          try {
-            await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: window.APP_CONFIG?.CHAIN_ID }]
-            });
-            // Reinitialize provider
-            provider = new ethers.BrowserProvider(window.ethereum);
-          } catch (switchError) {
-            // Error code 4902 indicates chain has not been added
-            if (switchError.code === 4902) {
-              await window.ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                  chainId: window.APP_CONFIG?.CHAIN_ID,
-                  chainName: window.APP_CONFIG?.CHAIN_NAME,
-                  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-                  rpcUrls: [window.APP_CONFIG?.RPC_URL],
-                  blockExplorerUrls: [window.APP_CONFIG?.BLOCK_EXPLORER]
-                }]
-              });
-              provider = new ethers.BrowserProvider(window.ethereum);
-            } else {
-              throw switchError;
-            }
-          }
-
-          const accounts = await provider.send("eth_requestAccounts", []);
-          userWalletAddress = accounts[0];
-        } else {
-          alert("MetaMask browser extension not detected! Please install MetaMask in Chrome to connect your wallet.");
+        if (!window.ethereum) {
+          alert("MetaMask browser extension not detected! Please install MetaMask to connect your wallet.");
           return;
         }
+
+        provider = new ethers.BrowserProvider(window.ethereum);
+        const network = await provider.getNetwork();
+        
+        // Re-resolve network from wallet chain
+        currentNetwork = window.getActiveNetwork(network.chainId);
+
+        const accounts = await provider.send("eth_requestAccounts", []);
+        userWalletAddress = accounts[0];
         
         // Connect contract to check if already registered
-        const contract = new ethers.Contract(contractAddress, contractAbi, provider);
-        const alreadyVerified = await contract.isHuman(userWalletAddress);
+        const contract = new ethers.Contract(currentNetwork.CONTRACT_ADDRESS, contractAbi, provider);
+        let alreadyVerified = false;
+        try {
+          alreadyVerified = await contract.isHuman(userWalletAddress);
+        } catch (e) {
+          console.warn("Could not query isHuman:", e);
+        }
 
         connectBtn.style.display = 'none';
-        walletInfo.innerText = `Connected Wallet: ${userWalletAddress}`;
+        userAddrText.innerText = userWalletAddress;
+        networkBadge.innerText = `${currentNetwork.CHAIN_NAME} (${currentNetwork.CHAIN_ID})`;
         walletInfo.style.display = 'block';
 
         if (alreadyVerified) {
+          proofNetwork.innerText = currentNetwork.CHAIN_NAME;
           proofAttestation.innerText = "E_PASSPORT";
           proofUserid.innerText = "Loaded on-chain";
           proofNullifier.innerText = "Loaded on-chain";
@@ -462,7 +526,7 @@
         }
       } catch (err) {
         console.error("Wallet connection failed:", err);
-        alert("Wallet connection failed! Please make sure your MetaMask is connected to Base Sepolia Testnet. Details: " + (err.message || err));
+        alert("Wallet connection failed! Details: " + (err.message || err));
       }
     });
 
@@ -478,8 +542,8 @@
         appName: "Dadami Enrollment",
         scope: "dadami-enrollment",
         user: userWalletAddress,
-        contract: contractAddress,
-        chain: "base-sepolia"
+        contract: currentNetwork.CONTRACT_ADDRESS,
+        chain: currentNetwork.CHAIN_ID === "0x7a69" ? "anvil" : "base-sepolia"
       });
       new QRCode(qrContainer, {
         text: selfPayload,
@@ -490,11 +554,11 @@
         correctLevel: QRCode.CorrectLevel.M
       });
 
-      // Live listener for real Self Pass Mobile App scans on Base Sepolia
-      const contract = new ethers.Contract(contractAddress, contractAbi, provider);
+      // Live listener for real Self Pass Mobile App scans
+      const contract = new ethers.Contract(currentNetwork.CONTRACT_ADDRESS, contractAbi, provider);
       contract.on("HumanRegistered", (user, nullifier, issuingState) => {
         if (user.toLowerCase() === userWalletAddress.toLowerCase()) {
-          console.log("Real Mobile App Proof Confirmed On-Chain!", { user, nullifier, issuingState });
+          console.log("Proof Confirmed On-Chain!", { user, nullifier, issuingState });
           
           step1.classList.remove('active');
           step1.classList.add('completed');
@@ -507,6 +571,7 @@
           step3.classList.add('active', 'completed');
           step3.querySelector('.step-icon').innerText = '✓';
 
+          proofNetwork.innerText = currentNetwork.CHAIN_NAME;
           proofAttestation.innerText = "E_PASSPORT";
           proofUserid.innerText = "Verified by Mobile App";
           proofNullifier.innerText = nullifier.toString();
@@ -515,7 +580,7 @@
           setTimeout(() => {
             activeState.style.display = 'none';
             successState.style.display = 'block';
-            alert("Verified! Your Self Pass mobile app verified your passport on Base Sepolia!");
+            alert("Verified! Your Self Pass passport attestation confirmed on " + currentNetwork.CHAIN_NAME + "!");
           }, 1000);
         }
       });
@@ -554,7 +619,7 @@
             attestationId: ethers.encodeBytes32String("E_PASSPORT"),
             userIdentifier: BigInt(seed),
             nullifier: BigInt(seed + 987654321),
-            issuingState: "IND" // Indian Passport for user's use case
+            issuingState: "IND"
           };
           
           mockProofPayload = ethers.getBytes("0x01020304");
@@ -562,7 +627,7 @@
           simulateStepBtn.removeAttribute('disabled');
           simulateStepBtn.innerText = "Submit Proof On-Chain";
           currentStep = 3;
-        }, 1500);
+        }, 1200);
       } else if (currentStep === 3) {
         // Step 3: Submit proof on-chain
         try {
@@ -575,13 +640,12 @@
           } else {
             signer = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
           }
-          const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+          const contract = new ethers.Contract(currentNetwork.CONTRACT_ADDRESS, contractAbi, signer);
 
-          // Prepare parameters for verifySelfProof(output, proof, userData)
           // userData contains the userWalletAddress encoded as bytes
           const userData = ethers.AbiCoder.defaultAbiCoder().encode(["address"], [userWalletAddress]);
 
-          console.log("Submitting proof output:", mockDiscloseOutput);
+          console.log("Submitting proof output to:", currentNetwork.CONTRACT_ADDRESS, mockDiscloseOutput);
           const tx = await contract.verifySelfProof(
             mockDiscloseOutput,
             mockProofPayload,
@@ -589,13 +653,12 @@
           );
           
           if (window.ethereum) {
-            alert("Attestation transaction sent! Confirm in MetaMask to write proof to blockchain.");
-          } else {
-            console.log("Transaction broadcasted locally via Anvil wallet.");
+            alert("Attestation transaction sent! Confirm in MetaMask to write proof to " + currentNetwork.CHAIN_NAME);
           }
           await tx.wait();
 
           // Update success view
+          proofNetwork.innerText = currentNetwork.CHAIN_NAME;
           proofAttestation.innerText = "E_PASSPORT";
           proofUserid.innerText = mockDiscloseOutput.userIdentifier.toString();
           proofNullifier.innerText = mockDiscloseOutput.nullifier.toString();
@@ -626,12 +689,12 @@
           } else {
             signer = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
           }
-          const contract = new ethers.Contract(contractAddress, contractAbi, signer);
+          const contract = new ethers.Contract(currentNetwork.CONTRACT_ADDRESS, contractAbi, signer);
 
           console.log("Resetting registration for user:", userWalletAddress);
           const tx = await contract.resetRegistration(userWalletAddress);
           if (window.ethereum) {
-            alert("Reset transaction sent! Confirm in MetaMask to clear your on-chain registration.");
+            alert("Reset transaction sent! Confirm in MetaMask to clear your on-chain registration on " + currentNetwork.CHAIN_NAME);
           }
           await tx.wait();
 
@@ -661,7 +724,7 @@
           resetRegBtn.removeAttribute('disabled');
           resetRegBtn.innerText = "🔄 Reset Registration (Dev Mode)";
 
-          alert("On-chain registration reset complete! Your wallet can now re-test verification cleanly.");
+          alert("On-chain registration reset complete! Your wallet can now re-test cleanly.");
         } catch (err) {
           console.error("Reset failed:", err);
           alert("On-chain reset failed: " + (err.reason || err.message || err));

@@ -19,8 +19,10 @@ fi
 if [ -d contracts ]; then
   echo "📦 Installing Forge dependencies locally..."
   cd contracts
-  # Initialize forge dependencies
-  forge install foundry-rs/forge-std --no-git
+  # Initialize forge dependencies only if not already installed
+  if [ ! -d "lib/forge-std" ]; then
+    forge install foundry-rs/forge-std --no-git
+  fi
   
   echo "🔨 Compiling smart contracts..."
   forge build
@@ -28,4 +30,4 @@ if [ -d contracts ]; then
 fi
 
 echo "✅ Setup complete! Serve the frontend directory to test the feature:"
-echo "   cd frontend && python3 -m http.server 8000"
+echo "   cd frontend && python3 -m http.server 8006"

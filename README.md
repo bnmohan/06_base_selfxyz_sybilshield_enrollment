@@ -120,15 +120,36 @@ source .env && forge create src/SelfVerifier.sol:SelfVerifier \
   --constructor-args $HUB_ADDRESS $CONFIG_ID
 ```
 
-### 3. Launching the Web Dapp
+## 🌐 Multi-Network Testing Guide
+
+Start the local web server:
 ```bash
-# Serve frontend folder via HTTP
 cd frontend
-python3 -m http.server 8000
+python3 -m http.server 8006
 ```
-Open **[http://localhost:8000](http://localhost:8000)** in Google Chrome, connect MetaMask to Base Sepolia, and interact with the ZK enrollment gateway!
+
+---
+
+### Option A: Test Live on Base Sepolia Testnet
+
+1. Open **[http://localhost:8006/?network=sepolia](http://localhost:8006/?network=sepolia)** in Chrome with MetaMask.
+2. In MetaMask, connect to **Base Sepolia** (`Chain ID: 84532`).
+3. Click **Connect MetaMask Wallet** $\rightarrow$ Click **Verify Official ID (Self.xyz)** to reveal the live scannable QR code for the Self Pass Mobile App.
+
+---
+
+### Option B: Test Locally on Anvil Fork (Fast & Free)
+
+1. **Launch the local Anvil fork**:
+   ```bash
+   anvil --fork-url https://sepolia.base.org --chain-id 31337
+   ```
+2. Open **[http://localhost:8006/?network=anvil](http://localhost:8006/?network=anvil)** in Chrome with MetaMask.
+3. In MetaMask, select **Localhost 8545** (`Chain ID: 31337`).
+4. Connect using pre-funded test accounts and use the interactive 3-step proof simulator to test attestation against the preloaded contract state!
 
 ---
 
 ## 📜 License
 MIT License. Built with ❤️ for the Base Ecosystem.
+
